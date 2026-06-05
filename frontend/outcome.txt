@@ -1,0 +1,87 @@
+{
+  "version": 1,
+  "title": {
+    "en": "Star Agent",
+    "zh": "Agent 大明星 101"
+  },
+  "brand": {
+    "en": "TikTok Live Room Case Study",
+    "zh": "TikTok 直播间案例研究"
+  },
+  "eyebrow": {
+    "en": "3 shortlisted cases | video clips + ASR",
+    "zh": "3 个入围案例｜视频切片 + ASR"
+  },
+  "subtitle": {
+    "en": "Looking for the next Pamela.",
+    "zh": "寻找下一位帕梅拉。"
+  },
+  "cases": [
+    {
+      "case_no": 1,
+      "source_rank_label": "冠军",
+      "source_name": "10",
+      "case_id": "7644998323224496926",
+      "clips": [
+        1,
+        2,
+        3
+      ],
+      "case_title": {
+        "en": "Menopause Fat Loss Q&A Live",
+        "zh": "更年期减脂问答直播间"
+      },
+      "judge_comment": {
+        "en": "INTJ Neal 战略家：该直播间有明确CTA，告知用户发消息说'calculator'就能免费得卡路里计算器。\nISTP Steve 鉴赏家：该直播间开场精准戳更年期女性减脂痛点，抛出‘帮2000+用户减脂’等干货钩子，不墨迹，整体吸引力强。\nENFJ Alice 主人公：该直播间开场就明确直播价值，主动引导首次来的观众发表情互动，还共情大家减脂的真实痛点，情绪价值拉满。",
+        "zh": "INTJ Neal 战略家：该直播间有明确CTA，告知用户发消息说'calculator'就能免费得卡路里计算器。\nISTP Steve 鉴赏家：该直播间开场精准戳更年期女性减脂痛点，抛出‘帮2000+用户减脂’等干货钩子，不墨迹，整体吸引力强。\nENFJ Alice 主人公：该直播间开场就明确直播价值，主动引导首次来的观众发表情互动，还共情大家减脂的真实痛点，情绪价值拉满。"
+      },
+      "host_summary": {
+        "zh": "就是争直播该精准戳痛点、节奏爽有明确互动留资指引，还是瞎闲聊拖沓没清晰引导。"
+      }
+    },
+    {
+      "case_no": 2,
+      "source_rank_label": "亚军",
+      "source_name": "17",
+      "case_id": "7642386496221825806",
+      "clips": [
+        1,
+        2,
+        4
+      ],
+      "case_title": {
+        "en": "High-Engagement Fitness Community Live",
+        "zh": "高互动健身社群直播间"
+      },
+      "judge_comment": {
+        "en": "INTJ Neal 战略家：该直播间先铺垫健身干货价值，给出明确留资指令'make sure you join my free school community'。\nISTP Steve 鉴赏家：该直播间全程称呼观众'cousins'，主动点名称呼进场观众，引导大家互动，亲和力强，情绪价值拉满。",
+        "zh": "INTJ Neal 战略家：该直播间先铺垫健身干货价值，给出明确留资指令'make sure you join my free school community'。\nISTP Steve 鉴赏家：该直播间全程称呼观众'cousins'，主动点名称呼进场观众，引导大家互动，亲和力强，情绪价值拉满。"
+      },
+      "host_summary": {
+        "zh": "搞内容到底该选真实敢说有梗的，还是选留资明确、懂拉互动给情绪价值的？"
+      }
+    },
+    {
+      "case_no": 3,
+      "source_rank_label": "季军",
+      "source_name": "8",
+      "case_id": "7644630109190294285",
+      "clips": [
+        1,
+        2,
+        3
+      ],
+      "case_title": {
+        "en": "Contest Prep Workout Companion Live",
+        "zh": "备赛训练陪练直播间"
+      },
+      "judge_comment": {
+        "en": "INTJ Neal 战略家：该直播间明确给出行动指令，引导用户点击banner提交表单、下载school app加入教练社区，转化路径清晰。\nISTP Steve 鉴赏家：该直播间多次明确引导留资，给出‘五餐减脂公式’等具体利益点，钩子清晰真实。\nENFJ Alice 主人公：该直播间互动感更强，发起了'first time in my live put a one in the chat'的互动，多次引导留资，亲和力更佳。",
+        "zh": "INTJ Neal 战略家：该直播间明确给出行动指令，引导用户点击banner提交表单、下载school app加入教练社区，转化路径清晰。\nISTP Steve 鉴赏家：该直播间多次明确引导留资，给出‘五餐减脂公式’等具体利益点，钩子清晰真实。\nENFJ Alice 主人公：该直播间互动感更强，发起了'first time in my live put a one in the chat'的互动，多次引导留资，亲和力更佳。"
+      },
+      "host_summary": {
+        "zh": "核心就是俩案例有没有明确留资引导、利益钩子、互动设计，转化路径清不清晰。"
+      }
+    }
+  ]
+}

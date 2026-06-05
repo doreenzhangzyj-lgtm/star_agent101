@@ -1,0 +1,56 @@
+{
+  "msg_type": "interactive",
+  "card": {
+    "config": {
+      "wide_screen_mode": true,
+      "enable_forward": true
+    },
+    "header": {
+      "template": "blue",
+      "title": {
+        "tag": "plain_text",
+        "content": "Case 01｜Placeholder Case Title 01"
+      }
+    },
+    "elements": [
+      {
+        "tag": "div",
+        "text": {
+          "tag": "lark_md",
+          "content": "**直播间标题**\nPlaceholder Case Title 01"
+        }
+      },
+      {
+        "tag": "div",
+        "text": {
+          "tag": "lark_md",
+          "content": "**内容概括**\n一段对该直播间内容的简要描述，2~3 句话。"
+        }
+      },
+      {
+        "tag": "div",
+        "text": {
+          "tag": "lark_md",
+          "content": "**评语**\n评委对该 Case 的点评"
+        }
+      },
+      {
+        "tag": "hr"
+      },
+      {
+        "tag": "action",
+        "actions": [
+          {
+            "tag": "button",
+            "text": {
+              "tag": "plain_text",
+              "content": "查看完整案例"
+            },
+            "type": "primary",
+            "url": "http://localhost:8000/tiktok-live-case-demo.html"
+          }
+        ]
+      }
+    ]
+  }
+}

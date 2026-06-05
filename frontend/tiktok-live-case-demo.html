@@ -1,0 +1,2349 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TikTok Live Room Best Case Presentation</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=IBM+Plex+Mono:wght@400;500;600;700&family=Manrope:wght@500;700;800&display=swap" rel="stylesheet">
+    <style>
+        /* ===========================================
+           THEME VARIABLES
+           Edit these values to quickly restyle the deck.
+           =========================================== */
+        :root {
+            --stage-bg: #030305;
+            --slide-bg: #050507;
+            --ink: #f6f2e8;
+            --muted: #a7a4ad;
+            --dim: #686573;
+            --cyan: #20f4ff;
+            --pink: #ff2d75;
+            --lime: #cbff5a;
+            --amber: #ffc857;
+            --panel: rgba(246, 242, 232, 0.078);
+            --panel-strong: rgba(246, 242, 232, 0.13);
+            --line: rgba(246, 242, 232, 0.18);
+            --shadow-pink: rgba(255, 45, 117, 0.32);
+            --shadow-cyan: rgba(32, 244, 255, 0.28);
+            --font-display: "Archivo Black", sans-serif;
+            --font-body: "Manrope", sans-serif;
+            --font-mono: "IBM Plex Mono", monospace;
+            --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+            --duration-normal: 0.72s;
+        }
+
+        /* ===========================================
+           RESET AND FIXED 16:9 VIEWPORT BASE
+           This is the full mandatory viewport-base.css content.
+           =========================================== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        /* 1. Lock the browser viewport */
+        html,
+        body {
+            width: 100%;
+            height: 100%;
+            margin: 0;
+            overflow: hidden;
+            background: var(--stage-bg, #000);
+        }
+
+        /* 2. Full-window deck viewport */
+        .deck-viewport {
+            position: fixed;
+            inset: 0;
+            overflow: hidden;
+            background: var(--stage-bg, #000);
+        }
+
+        /* 3. Fixed 16:9 design canvas.
+           JavaScript sets transform: translate(...) scale(...). */
+        .deck-stage {
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 1920px;
+            height: 1080px;
+            overflow: hidden;
+            transform-origin: 0 0;
+            background: var(--slide-bg, #fff);
+        }
+
+        /* 4. Slides stack inside the fixed stage.
+           Content must be laid out at 1920x1080, not reflowed per device. */
+        .slide {
+            position: absolute;
+            inset: 0;
+            width: 1920px;
+            height: 1080px;
+            overflow: hidden;
+            display: block;
+            visibility: hidden;
+            opacity: 0;
+            pointer-events: none;
+            background: var(--slide-bg, #fff);
+        }
+
+        .slide.active,
+        .slide.visible {
+            visibility: visible;
+            opacity: 1;
+            pointer-events: auto;
+            z-index: 1;
+        }
+
+        /* 5. Keep media inside authored slide bounds */
+        img,
+        video,
+        canvas,
+        svg {
+            max-width: 100%;
+            max-height: 100%;
+        }
+
+        /* 6. Presentation chrome stays outside the slide design system */
+        .deck-controls {
+            position: fixed;
+            left: 50%;
+            bottom: 22px;
+            transform: translateX(-50%);
+            z-index: 1000;
+        }
+
+        /* 7. Print one fixed-size slide per page */
+        @media print {
+            html,
+            body {
+                width: 1920px;
+                height: auto;
+                overflow: visible;
+                background: #fff;
+            }
+
+            .deck-viewport {
+                position: static;
+                overflow: visible;
+                background: #fff;
+            }
+
+            .deck-stage {
+                position: static;
+                width: auto;
+                height: auto;
+                transform: none !important;
+                background: none;
+            }
+
+            .slide {
+                position: relative;
+                display: block !important;
+                visibility: visible !important;
+                opacity: 1 !important;
+                pointer-events: auto !important;
+                width: 1920px;
+                height: 1080px;
+                break-after: page;
+                page-break-after: always;
+            }
+
+            .slide:last-child {
+                break-after: auto;
+                page-break-after: auto;
+            }
+
+            .deck-controls {
+                display: none !important;
+            }
+        }
+
+        /* 8. Reduced motion */
+        @media (prefers-reduced-motion: reduce) {
+            *,
+            *::before,
+            *::after {
+                animation-duration: 0.01ms !important;
+                transition-duration: 0.2s !important;
+            }
+        }
+
+        /* ===========================================
+           GLOBAL SLIDE ATMOSPHERE
+           Creates a live-control-room look without external assets.
+           =========================================== */
+        body {
+            color: var(--ink);
+            font-family: var(--font-body);
+        }
+
+        .slide::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background:
+                linear-gradient(90deg, rgba(255,255,255,0.032) 1px, transparent 1px),
+                linear-gradient(rgba(255,255,255,0.032) 1px, transparent 1px);
+            background-size: 64px 64px;
+            mask-image: linear-gradient(180deg, rgba(0,0,0,0.9), rgba(0,0,0,0.18));
+            pointer-events: none;
+        }
+
+        .slide::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background:
+                radial-gradient(circle at 8% 12%, rgba(32,244,255,0.18), transparent 26%),
+                radial-gradient(circle at 90% 10%, rgba(255,45,117,0.18), transparent 30%),
+                radial-gradient(circle at 76% 88%, rgba(203,255,90,0.08), transparent 30%),
+                linear-gradient(135deg, rgba(0,0,0,0.2), rgba(0,0,0,0.92));
+            pointer-events: none;
+        }
+
+        .noise {
+            position: absolute;
+            inset: 0;
+            opacity: 0.08;
+            pointer-events: none;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 220 220' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.84' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='220' height='220' filter='url(%23n)' opacity='0.7'/%3E%3C/svg%3E");
+            z-index: 2;
+        }
+
+        .slide-inner {
+            position: relative;
+            z-index: 3;
+            width: 100%;
+            height: 100%;
+            padding: 82px 96px;
+        }
+
+        /* ===========================================
+           TYPOGRAPHY
+           Large, presenter-friendly type with mono data labels.
+           =========================================== */
+        h1,
+        h2,
+        .display {
+            font-family: var(--font-display);
+            letter-spacing: 0;
+            text-transform: uppercase;
+            line-height: 0.92;
+        }
+
+        h1 {
+            font-size: 142px;
+            max-width: 1220px;
+        }
+
+        h2 {
+            font-size: 94px;
+            max-width: 1300px;
+        }
+
+        .eyebrow,
+        .mono,
+        .tag,
+        .metric-label,
+        .page-num {
+            font-family: var(--font-mono);
+            letter-spacing: 0;
+            text-transform: uppercase;
+        }
+
+        .eyebrow {
+            color: var(--cyan);
+            font-size: 22px;
+            font-weight: 700;
+            margin-bottom: 34px;
+        }
+
+        .subhead {
+            color: var(--muted);
+            font-size: 35px;
+            line-height: 1.32;
+            max-width: 900px;
+            margin-top: 34px;
+            font-weight: 700;
+        }
+
+        .body-copy {
+            color: var(--ink);
+            font-size: 31px;
+            line-height: 1.42;
+            font-weight: 700;
+        }
+
+        .muted {
+            color: var(--muted);
+        }
+
+        .accent-cyan {
+            color: var(--cyan);
+            text-shadow: 0 0 28px var(--shadow-cyan);
+        }
+
+        .accent-pink {
+            color: var(--pink);
+            text-shadow: 0 0 28px var(--shadow-pink);
+        }
+
+        .accent-lime {
+            color: var(--lime);
+        }
+
+        /* ===========================================
+           ANIMATION SYSTEM
+           Slide content reveals with staggered timing.
+           =========================================== */
+        .reveal {
+            opacity: 0;
+            transform: translateY(34px);
+            transition:
+                opacity var(--duration-normal) var(--ease-out-expo),
+                transform var(--duration-normal) var(--ease-out-expo),
+                filter var(--duration-normal) var(--ease-out-expo);
+            filter: blur(8px);
+        }
+
+        .slide.visible .reveal {
+            opacity: 1;
+            transform: translateY(0);
+            filter: blur(0);
+        }
+
+        .slide.visible .reveal:nth-child(1) { transition-delay: 0.08s; }
+        .slide.visible .reveal:nth-child(2) { transition-delay: 0.18s; }
+        .slide.visible .reveal:nth-child(3) { transition-delay: 0.28s; }
+        .slide.visible .reveal:nth-child(4) { transition-delay: 0.38s; }
+        .slide.visible .reveal:nth-child(5) { transition-delay: 0.48s; }
+        .slide.visible .reveal:nth-child(6) { transition-delay: 0.58s; }
+
+        .pulse-live {
+            animation: livePulse 1.6s ease-in-out infinite;
+        }
+
+        @keyframes livePulse {
+            0%, 100% { box-shadow: 0 0 0 rgba(255,45,117,0), 0 0 30px rgba(255,45,117,0.32); }
+            50% { box-shadow: 0 0 0 16px rgba(255,45,117,0.08), 0 0 46px rgba(255,45,117,0.56); }
+        }
+
+        @keyframes tickerMove {
+            from { transform: translateX(0); }
+            to { transform: translateX(-50%); }
+        }
+
+        @keyframes floatDrift {
+            0%, 100% { transform: translateY(0) rotate(-1deg); }
+            50% { transform: translateY(-14px) rotate(1deg); }
+        }
+
+        /* ===========================================
+           REUSABLE COMPONENTS
+           Panels, tags, metrics, rails, and presentation chrome.
+           =========================================== */
+        .topline {
+            position: absolute;
+            left: 96px;
+            right: 96px;
+            top: 54px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            z-index: 4;
+        }
+
+        .brand-lockup {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            font-family: var(--font-mono);
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--ink);
+            text-transform: uppercase;
+        }
+
+        .live-dot {
+            width: 22px;
+            height: 22px;
+            border-radius: 999px;
+            background: var(--pink);
+            box-shadow: 0 0 24px var(--shadow-pink);
+        }
+
+        .page-num {
+            color: var(--dim);
+            font-size: 18px;
+            font-weight: 700;
+        }
+
+        .panel {
+            border: 1px solid var(--line);
+            background: var(--panel);
+            backdrop-filter: blur(12px);
+            box-shadow: 0 34px 90px rgba(0,0,0,0.25);
+        }
+
+        .tag-row {
+            display: flex;
+            gap: 14px;
+            flex-wrap: wrap;
+        }
+
+        .tag {
+            height: 42px;
+            display: inline-flex;
+            align-items: center;
+            padding: 0 16px;
+            border: 1px solid var(--line);
+            color: var(--ink);
+            background: rgba(255,255,255,0.05);
+            font-size: 17px;
+            font-weight: 700;
+        }
+
+        .metric-card {
+            padding: 32px;
+            min-height: 190px;
+        }
+
+        .metric-value {
+            font-family: var(--font-display);
+            font-size: 76px;
+            line-height: 0.95;
+            letter-spacing: 0;
+        }
+
+        .metric-label {
+            margin-top: 20px;
+            color: var(--muted);
+            font-size: 17px;
+            font-weight: 700;
+            line-height: 1.35;
+        }
+
+        .split {
+            display: grid;
+            grid-template-columns: 1.03fr 0.97fr;
+            gap: 58px;
+            height: 100%;
+            align-items: center;
+        }
+
+        .three-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 28px;
+        }
+
+        .two-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 28px;
+        }
+
+        .ticker {
+            position: absolute;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            height: 64px;
+            border-top: 1px solid rgba(255,255,255,0.14);
+            background: rgba(0,0,0,0.48);
+            overflow: hidden;
+            z-index: 5;
+        }
+
+        .ticker-track {
+            display: flex;
+            width: max-content;
+            animation: tickerMove 18s linear infinite;
+        }
+
+        .ticker span {
+            font-family: var(--font-mono);
+            color: var(--lime);
+            font-size: 20px;
+            font-weight: 700;
+            line-height: 64px;
+            white-space: nowrap;
+            padding-right: 42px;
+        }
+
+        .deck-controls {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 14px;
+            border: 1px solid rgba(246,242,232,0.18);
+            background: rgba(5,5,7,0.62);
+            backdrop-filter: blur(18px);
+            color: var(--ink);
+            font-family: var(--font-mono);
+            font-size: 13px;
+            border-radius: 999px;
+        }
+
+        .progress-shell {
+            width: 154px;
+            height: 5px;
+            background: rgba(255,255,255,0.12);
+            overflow: hidden;
+            border-radius: 999px;
+        }
+
+        .progress-bar {
+            width: 0%;
+            height: 100%;
+            background: linear-gradient(90deg, var(--cyan), var(--pink), var(--lime));
+            transition: width 0.35s var(--ease-out-expo);
+        }
+
+        /* ===========================================
+           TITLE SLIDE
+           Builds a stylized live shopping phone and host dashboard.
+           =========================================== */
+        .title-layout {
+            position: relative;
+            height: 100%;
+            display: grid;
+            grid-template-columns: 1fr 520px;
+            gap: 70px;
+            align-items: center;
+            padding-top: 34px;
+        }
+
+        .title-title {
+            position: relative;
+        }
+
+        .title-title::after {
+            content: "";
+            position: absolute;
+            left: 8px;
+            bottom: -34px;
+            width: 520px;
+            height: 9px;
+            background: linear-gradient(90deg, var(--cyan), var(--pink), transparent);
+        }
+
+        .phone-live {
+            position: relative;
+            width: 440px;
+            height: 810px;
+            margin-left: auto;
+            border-radius: 48px;
+            border: 2px solid rgba(255,255,255,0.24);
+            background:
+                radial-gradient(circle at 50% 22%, rgba(255,45,117,0.34), transparent 34%),
+                radial-gradient(circle at 28% 74%, rgba(32,244,255,0.22), transparent 34%),
+                linear-gradient(180deg, #15121a, #060609);
+            box-shadow:
+                0 0 0 10px rgba(255,255,255,0.04),
+                0 40px 110px rgba(0,0,0,0.55),
+                0 0 90px var(--shadow-pink);
+            overflow: hidden;
+            animation: floatDrift 5s ease-in-out infinite;
+        }
+
+        .phone-live::before {
+            content: "";
+            position: absolute;
+            left: 50%;
+            top: 18px;
+            width: 132px;
+            height: 28px;
+            transform: translateX(-50%);
+            border-radius: 999px;
+            background: #030305;
+        }
+
+        .host-silhouette {
+            position: absolute;
+            left: 102px;
+            top: 174px;
+            width: 236px;
+            height: 360px;
+            border-radius: 120px 120px 60px 60px;
+            background:
+                radial-gradient(circle at 50% 25%, #f1b7a4 0 45px, transparent 47px),
+                linear-gradient(180deg, rgba(246,242,232,0.86), rgba(246,242,232,0.18));
+            filter: drop-shadow(0 0 42px rgba(255,255,255,0.22));
+        }
+
+        .commerce-card {
+            position: absolute;
+            left: 34px;
+            right: 34px;
+            bottom: 34px;
+            height: 185px;
+            border: 1px solid rgba(255,255,255,0.2);
+            background: rgba(0,0,0,0.54);
+            backdrop-filter: blur(14px);
+            padding: 20px;
+            display: grid;
+            grid-template-columns: 104px 1fr;
+            gap: 18px;
+            align-items: center;
+        }
+
+        .product-thumb {
+            width: 104px;
+            height: 104px;
+            background:
+                linear-gradient(135deg, rgba(203,255,90,0.95), rgba(32,244,255,0.85)),
+                linear-gradient(45deg, transparent 42%, rgba(255,255,255,0.42) 43% 55%, transparent 56%);
+        }
+
+        .live-badge {
+            position: absolute;
+            left: 34px;
+            top: 78px;
+            height: 44px;
+            padding: 0 16px;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            background: var(--pink);
+            color: white;
+            font-family: var(--font-mono);
+            font-weight: 800;
+            font-size: 18px;
+            text-transform: uppercase;
+        }
+
+        /* ===========================================
+           FUNNEL SLIDE
+           Visualizes live commerce flow as a controlled pipeline.
+           =========================================== */
+        .funnel-wrap {
+            margin-top: 76px;
+            display: grid;
+            grid-template-columns: 430px 430px 430px 1fr;
+            gap: 24px;
+            align-items: stretch;
+        }
+
+        .funnel-step {
+            position: relative;
+            min-height: 430px;
+            padding: 34px;
+        }
+
+        .funnel-step::after {
+            content: "";
+            position: absolute;
+            right: -25px;
+            top: 50%;
+            width: 24px;
+            height: 2px;
+            background: var(--line);
+        }
+
+        .funnel-step:last-child::after {
+            display: none;
+        }
+
+        .step-number {
+            font-family: var(--font-display);
+            font-size: 90px;
+            color: rgba(255,255,255,0.12);
+            line-height: 0.8;
+            margin-bottom: 42px;
+        }
+
+        .step-title {
+            font-size: 34px;
+            font-weight: 800;
+            line-height: 1.08;
+            margin-bottom: 22px;
+        }
+
+        .step-copy {
+            color: var(--muted);
+            font-size: 23px;
+            line-height: 1.38;
+            font-weight: 700;
+        }
+
+        /* ===========================================
+           LIVE MOMENT SLIDE
+           Uses a vertical phone feed alongside decision triggers.
+           =========================================== */
+        .moment-grid {
+            display: grid;
+            grid-template-columns: 520px 1fr;
+            gap: 70px;
+            height: 820px;
+            align-items: center;
+        }
+
+        .feed-stack {
+            position: relative;
+            width: 500px;
+            height: 780px;
+        }
+
+        .feed-card {
+            position: absolute;
+            width: 396px;
+            height: 230px;
+            padding: 28px;
+            border: 1px solid rgba(255,255,255,0.18);
+            background: rgba(255,255,255,0.075);
+        }
+
+        .feed-card:nth-child(1) { left: 42px; top: 0; }
+        .feed-card:nth-child(2) { left: 96px; top: 255px; border-color: rgba(32,244,255,0.34); }
+        .feed-card:nth-child(3) { left: 0; top: 510px; border-color: rgba(255,45,117,0.34); }
+
+        .quote-mark {
+            font-family: var(--font-display);
+            font-size: 88px;
+            line-height: 0.8;
+            color: var(--pink);
+        }
+
+        .trigger-list {
+            display: grid;
+            gap: 24px;
+            margin-top: 48px;
+        }
+
+        .trigger {
+            display: grid;
+            grid-template-columns: 74px 1fr;
+            gap: 24px;
+            align-items: center;
+            padding: 26px 30px;
+        }
+
+        .trigger-icon {
+            width: 74px;
+            height: 74px;
+            display: grid;
+            place-items: center;
+            font-family: var(--font-display);
+            font-size: 42px;
+            background: linear-gradient(135deg, var(--cyan), var(--pink));
+            color: #050507;
+        }
+
+        /* ===========================================
+           EXPERIMENT SLIDE
+           Frames the case as a testable growth intervention.
+           =========================================== */
+        .experiment-board {
+            margin-top: 56px;
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 28px;
+        }
+
+        .experiment-card {
+            min-height: 470px;
+            padding: 34px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .experiment-card h3 {
+            font-size: 42px;
+            line-height: 1.05;
+            margin-bottom: 24px;
+        }
+
+        .big-token {
+            font-family: var(--font-display);
+            font-size: 150px;
+            line-height: 0.86;
+            color: rgba(246,242,232,0.15);
+        }
+
+        .hypothesis {
+            border-left: 8px solid var(--lime);
+            padding-left: 28px;
+            font-size: 36px;
+            line-height: 1.22;
+            font-weight: 800;
+            max-width: 1120px;
+            margin-top: 48px;
+        }
+
+        /* ===========================================
+           RESULTS SLIDE
+           Shows mock case metrics with clear attribution labels.
+           =========================================== */
+        .results-layout {
+            margin-top: 58px;
+            display: grid;
+            grid-template-columns: 1.05fr 0.95fr;
+            gap: 42px;
+            align-items: stretch;
+        }
+
+        .hero-metric {
+            padding: 46px;
+            min-height: 590px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            background:
+                linear-gradient(135deg, rgba(32,244,255,0.16), rgba(255,45,117,0.12)),
+                var(--panel);
+        }
+
+        .hero-metric .metric-value {
+            font-size: 180px;
+            color: var(--ink);
+            text-shadow: 0 0 54px rgba(32,244,255,0.2);
+        }
+
+        .sparkline {
+            height: 145px;
+            width: 100%;
+        }
+
+        .sparkline polyline {
+            fill: none;
+            stroke: var(--lime);
+            stroke-width: 8;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+            filter: drop-shadow(0 0 16px rgba(203,255,90,0.45));
+        }
+
+        .result-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 28px;
+        }
+
+        /* ===========================================
+           OPERATIONS SLIDE
+           Turns case learnings into a reusable production rhythm.
+           =========================================== */
+        .ops-map {
+            position: relative;
+            margin-top: 62px;
+            height: 590px;
+        }
+
+        .ops-line {
+            position: absolute;
+            left: 110px;
+            right: 110px;
+            top: 252px;
+            height: 4px;
+            background: linear-gradient(90deg, var(--cyan), var(--pink), var(--lime));
+            box-shadow: 0 0 32px rgba(32,244,255,0.25);
+        }
+
+        .ops-node {
+            position: absolute;
+            width: 310px;
+            min-height: 246px;
+            padding: 28px;
+        }
+
+        .ops-node:nth-child(2) { left: 20px; top: 0; }
+        .ops-node:nth-child(3) { left: 430px; top: 290px; }
+        .ops-node:nth-child(4) { left: 840px; top: 0; }
+        .ops-node:nth-child(5) { left: 1250px; top: 290px; }
+
+        .ops-node h3 {
+            font-size: 31px;
+            line-height: 1.08;
+            margin-bottom: 18px;
+        }
+
+        .ops-node p {
+            font-size: 21px;
+            line-height: 1.36;
+            color: var(--muted);
+            font-weight: 700;
+        }
+
+        /* ===========================================
+           RISK SLIDE
+           Balances growth with controls and brand safety.
+           =========================================== */
+        .risk-board {
+            margin-top: 58px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 28px;
+        }
+
+        .risk-card {
+            min-height: 250px;
+            padding: 32px;
+            display: grid;
+            grid-template-columns: 96px 1fr;
+            gap: 28px;
+            align-items: start;
+        }
+
+        .risk-score {
+            width: 96px;
+            height: 96px;
+            display: grid;
+            place-items: center;
+            font-family: var(--font-display);
+            font-size: 44px;
+            color: #050507;
+            background: var(--amber);
+        }
+
+        .risk-card h3 {
+            font-size: 33px;
+            margin-bottom: 12px;
+        }
+
+        .risk-card p {
+            color: var(--muted);
+            font-size: 22px;
+            line-height: 1.36;
+            font-weight: 700;
+        }
+
+        /* ===========================================
+           CLOSING SLIDE
+           Ends with a direct decision and next-step framing.
+           =========================================== */
+        .closing {
+            display: grid;
+            place-items: center;
+            text-align: center;
+            height: 100%;
+        }
+
+        .closing h2 {
+            font-size: 122px;
+            max-width: 1360px;
+            margin: 0 auto;
+        }
+
+        .decision-row {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 24px;
+            width: 1320px;
+            margin: 72px auto 0;
+        }
+
+        .decision-card {
+            min-height: 182px;
+            padding: 28px;
+            text-align: left;
+        }
+
+        .decision-card h3 {
+            font-size: 29px;
+            margin-bottom: 16px;
+        }
+
+        .decision-card p {
+            color: var(--muted);
+            font-size: 20px;
+            line-height: 1.32;
+            font-weight: 700;
+        }
+
+        /* ===========================================
+           CASE SHOWCASE SLIDES
+           Real video clips are the main artifact; ASR insights sit beside them.
+           =========================================== */
+        .case-hero-layout {
+            position: relative;
+            height: 100%;
+            display: grid;
+            grid-template-columns: 1.03fr 0.97fr;
+            gap: 62px;
+            align-items: center;
+            padding-top: 26px;
+        }
+
+        .case-index-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 28px;
+            margin-top: 58px;
+        }
+
+        .case-index-card {
+            min-height: 410px;
+            padding: 34px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .case-index-card h3 {
+            font-size: 42px;
+            line-height: 1.04;
+            margin-bottom: 18px;
+        }
+
+        .case-id {
+            font-family: var(--font-mono);
+            color: var(--dim);
+            font-size: 16px;
+            font-weight: 700;
+            margin-top: 22px;
+            word-break: break-all;
+        }
+
+        .video-wall {
+            height: 790px;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 22px;
+            align-items: center;
+        }
+
+        .video-card {
+            position: relative;
+            height: 730px;
+            border: 1px solid rgba(246,242,232,0.2);
+            background: rgba(0,0,0,0.78);
+            box-shadow: 0 30px 80px rgba(0,0,0,0.34);
+            overflow: hidden;
+        }
+
+        .video-card:nth-child(2) {
+            transform: translateY(-28px);
+        }
+
+        .video-card video {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            display: block;
+            background: #000;
+        }
+
+        .clip-label {
+            position: absolute;
+            left: 14px;
+            top: 14px;
+            z-index: 2;
+            height: 34px;
+            display: inline-flex;
+            align-items: center;
+            padding: 0 12px;
+            background: rgba(5,5,7,0.74);
+            border: 1px solid rgba(246,242,232,0.22);
+            color: var(--ink);
+            font-family: var(--font-mono);
+            font-size: 13px;
+            font-weight: 800;
+            text-transform: uppercase;
+            backdrop-filter: blur(12px);
+        }
+
+        .case-copy {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            min-height: 790px;
+        }
+
+        .case-copy h2 {
+            font-size: 74px;
+            max-width: 780px;
+        }
+
+        .insight-list {
+            display: grid;
+            gap: 18px;
+            margin-top: 42px;
+        }
+
+        .insight {
+            padding: 22px 24px;
+            display: grid;
+            grid-template-columns: 34px 1fr;
+            gap: 18px;
+            align-items: start;
+        }
+
+        .insight-num {
+            width: 34px;
+            height: 34px;
+            display: grid;
+            place-items: center;
+            color: #050507;
+            background: var(--lime);
+            font-family: var(--font-display);
+            font-size: 20px;
+            line-height: 1;
+        }
+
+        .insight p {
+            color: var(--ink);
+            font-size: 24px;
+            line-height: 1.34;
+            font-weight: 800;
+        }
+
+        .asr-strip {
+            margin-top: 28px;
+            padding: 22px 24px;
+            border-left: 6px solid var(--cyan);
+            background: rgba(32,244,255,0.075);
+            color: var(--muted);
+            font-size: 22px;
+            line-height: 1.34;
+            font-weight: 700;
+        }
+
+        .risk-strip {
+            border-left-color: var(--pink);
+            background: rgba(255,45,117,0.075);
+        }
+
+        .case-score-row {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 18px;
+            margin-top: 32px;
+        }
+
+        .case-score {
+            min-height: 116px;
+            padding: 20px;
+        }
+
+        .case-score strong {
+            display: block;
+            font-family: var(--font-display);
+            font-size: 42px;
+            line-height: 0.9;
+        }
+
+        .case-score span {
+            display: block;
+            color: var(--muted);
+            font-family: var(--font-mono);
+            font-size: 13px;
+            font-weight: 700;
+            line-height: 1.3;
+            margin-top: 14px;
+            text-transform: uppercase;
+        }
+
+        /* ===========================================
+           SIMPLIFIED DENSITY OVERRIDES
+           Keeps the revised deck quieter and more video-led.
+           =========================================== */
+        .slide::before {
+            opacity: 0.36;
+        }
+
+        .slide-inner {
+            padding: 88px 104px;
+        }
+
+        .case-hero-layout {
+            grid-template-columns: 1.14fr 0.86fr;
+            gap: 74px;
+        }
+
+        .case-copy {
+            min-height: 760px;
+        }
+
+        .case-copy h2 {
+            font-size: 66px;
+            max-width: 660px;
+        }
+
+        .video-wall {
+            height: 760px;
+            gap: 18px;
+        }
+
+        .video-card {
+            height: 705px;
+        }
+
+        .insight-list {
+            gap: 16px;
+            margin-top: 38px;
+        }
+
+        .insight {
+            grid-template-columns: 1fr;
+            padding: 24px 26px;
+        }
+
+        .insight-num {
+            display: none;
+        }
+
+        .insight p {
+            font-size: 26px;
+            line-height: 1.28;
+        }
+
+        .insight-list [data-case-comment] {
+            width: 100%;
+        }
+
+        .judge-list {
+            display: grid;
+            gap: 22px;
+        }
+
+        .judge-card {
+            display: grid;
+            grid-template-columns: 98px 1fr;
+            gap: 24px;
+            align-items: start;
+            padding: 26px 30px;
+            border: 1px solid rgba(246,242,232,0.16);
+            background:
+                radial-gradient(circle at 8% 20%, rgba(32,244,255,0.12), transparent 28%),
+                linear-gradient(135deg, rgba(255,255,255,0.09), rgba(255,255,255,0.035)),
+                rgba(0,0,0,0.2);
+        }
+
+        .judge-avatar {
+            position: relative;
+            width: 74px;
+            height: 74px;
+            display: grid;
+            place-items: center;
+            border: 2px solid var(--cyan);
+            color: var(--cyan);
+            font-family: var(--font-display);
+            font-size: 30px;
+            line-height: 1;
+            margin-bottom: 18px;
+            text-shadow: 0 0 18px rgba(32,244,255,0.4);
+            box-shadow: 0 0 28px rgba(32,244,255,0.13);
+        }
+
+        .judge-avatar::after {
+            content: attr(data-trait);
+            position: absolute;
+            left: 50%;
+            bottom: -18px;
+            transform: translateX(-50%);
+            min-width: 76px;
+            height: 26px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0 8px;
+            background: var(--pink);
+            color: var(--ink);
+            font-family: var(--font-mono);
+            font-size: 11px;
+            font-weight: 900;
+            white-space: nowrap;
+            box-shadow: 0 0 18px rgba(255,45,117,0.38);
+        }
+
+        .judge-card.istp .judge-avatar {
+            border-color: var(--lime);
+            color: var(--lime);
+            text-shadow: 0 0 18px rgba(203,255,90,0.34);
+            box-shadow: 0 0 28px rgba(203,255,90,0.12);
+        }
+
+        .judge-card.istp .judge-avatar::after {
+            background: var(--lime);
+            color: #050507;
+        }
+
+        .judge-card.enfj .judge-avatar {
+            border-color: var(--pink);
+            color: var(--pink);
+            text-shadow: 0 0 18px rgba(255,45,117,0.38);
+            box-shadow: 0 0 28px rgba(255,45,117,0.13);
+        }
+
+        .judge-card.enfj .judge-avatar::after {
+            background: var(--cyan);
+            color: #050507;
+        }
+
+        .judge-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            align-items: center;
+            margin-bottom: 16px;
+            font-family: var(--font-mono);
+            text-transform: uppercase;
+        }
+
+        .judge-mbti {
+            color: #050507;
+            background: var(--cyan);
+            padding: 5px 9px;
+            font-size: 15px;
+            font-weight: 800;
+        }
+
+        .judge-card.istp .judge-mbti {
+            background: var(--lime);
+        }
+
+        .judge-card.enfj .judge-mbti {
+            background: var(--pink);
+            color: var(--ink);
+        }
+
+        .judge-name {
+            color: var(--ink);
+            font-size: 18px;
+            font-weight: 800;
+        }
+
+        .judge-role {
+            color: var(--muted);
+            font-size: 16px;
+            font-weight: 800;
+        }
+
+        .judge-comment {
+            color: var(--ink);
+            font-size: 20px;
+            line-height: 1.55;
+            font-weight: 800;
+            max-width: 780px;
+        }
+
+        .asr-strip {
+            margin-top: 28px;
+            font-size: 20px;
+        }
+
+        .home-case-layout {
+            height: 100%;
+            padding-top: 36px;
+        }
+
+        .home-case-layout h1 {
+            max-width: 1320px;
+            font-size: 92px;
+        }
+
+        html[lang="zh-CN"] .home-case-layout h1 {
+            display: grid;
+            gap: 12px;
+            max-width: 1180px;
+            line-height: 0.9;
+        }
+
+        .zh-title-mark {
+            width: max-content;
+            display: inline-flex;
+            align-items: center;
+            gap: 16px;
+            font-family: var(--font-mono);
+            font-size: 29px;
+            line-height: 1;
+            color: var(--cyan);
+            text-shadow: 0 0 22px rgba(32,244,255,0.42);
+        }
+
+        .zh-title-mark::after {
+            content: "";
+            width: 170px;
+            height: 2px;
+            background: linear-gradient(90deg, var(--cyan), rgba(255,45,117,0.65), transparent);
+        }
+
+        .zh-title-main {
+            display: block;
+            font-family: var(--font-display);
+            font-size: 126px;
+            color: var(--ink);
+            text-shadow:
+                0 2px 0 rgba(255,255,255,0.16),
+                0 0 42px rgba(246,242,232,0.15),
+                0 0 74px rgba(255,45,117,0.16);
+        }
+
+        .zh-title-number {
+            color: var(--pink);
+            text-shadow:
+                0 0 30px rgba(255,45,117,0.42),
+                0 0 76px rgba(255,45,117,0.16);
+        }
+
+        .home-case-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 30px;
+            margin-top: 34px;
+        }
+
+        .home-case-card {
+            position: relative;
+            height: 610px;
+            overflow: hidden;
+            border: 1px solid rgba(246,242,232,0.2);
+            background: rgba(0,0,0,0.78);
+        }
+
+        .home-case-card::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            z-index: 1;
+            pointer-events: none;
+            border: 1px solid rgba(255, 214, 102, 0.42);
+            box-shadow:
+                inset 0 0 0 1px rgba(255,255,255,0.08),
+                0 0 42px rgba(255, 196, 77, 0.12);
+        }
+
+        .home-case-card:nth-child(2)::before {
+            border-color: rgba(214, 222, 230, 0.42);
+            box-shadow:
+                inset 0 0 0 1px rgba(255,255,255,0.08),
+                0 0 38px rgba(214, 222, 230, 0.1);
+        }
+
+        .home-case-card:nth-child(3)::before {
+            border-color: rgba(206, 133, 75, 0.48);
+            box-shadow:
+                inset 0 0 0 1px rgba(255,255,255,0.08),
+                0 0 36px rgba(206, 103, 67, 0.12);
+        }
+
+        .home-case-card video {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            object-position: center center;
+            display: block;
+            opacity: 0.94;
+        }
+
+        .rank-badge {
+            position: absolute;
+            top: 22px;
+            left: 22px;
+            z-index: 3;
+            display: inline-grid;
+            grid-template-columns: auto 1fr;
+            align-items: center;
+            gap: 12px;
+            padding: 11px 14px 10px;
+            border: 1px solid rgba(255, 214, 102, 0.42);
+            background: rgba(5,5,7,0.74);
+            color: var(--ink);
+            font-family: var(--font-mono);
+            backdrop-filter: blur(14px);
+        }
+
+        .rank-medal {
+            width: 38px;
+            height: 38px;
+            display: grid;
+            place-items: center;
+            background: linear-gradient(135deg, #fff1a6, #ffb72f 48%, #9e5b10);
+            color: #130b02;
+            font-family: var(--font-display);
+            font-size: 22px;
+            line-height: 1;
+            box-shadow: 0 0 24px rgba(255, 196, 77, 0.3);
+        }
+
+        .rank-badge span:last-child {
+            display: block;
+            font-size: 18px;
+            font-weight: 900;
+            letter-spacing: 0;
+        }
+
+        .home-case-card:nth-child(2) .rank-badge {
+            border-color: rgba(214, 222, 230, 0.42);
+        }
+
+        .home-case-card:nth-child(2) .rank-medal {
+            background: linear-gradient(135deg, #f4f8fb, #aeb9c6 52%, #626d78);
+            color: #090b0e;
+            box-shadow: 0 0 22px rgba(214, 222, 230, 0.22);
+        }
+
+        .home-case-card:nth-child(3) .rank-badge {
+            border-color: rgba(206, 133, 75, 0.48);
+        }
+
+        .home-case-card:nth-child(3) .rank-medal {
+            background: linear-gradient(135deg, #ffd1a8, #c8773c 50%, #6c321a);
+            color: #140805;
+            box-shadow: 0 0 22px rgba(206, 103, 67, 0.22);
+        }
+
+        .home-case-meta {
+            position: absolute;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            z-index: 2;
+            padding: 22px 24px 24px;
+            background: linear-gradient(180deg, transparent, rgba(0,0,0,0.78) 30%, rgba(0,0,0,0.92));
+        }
+
+        .home-case-meta h3 {
+            font-size: 30px;
+            line-height: 1.05;
+            margin-bottom: 10px;
+        }
+
+        .home-case-meta p {
+            color: var(--muted);
+            font-size: 17px;
+            line-height: 1.28;
+            font-weight: 700;
+        }
+
+        .home-case-layout .subhead {
+            max-width: 1180px;
+            margin-top: 22px;
+            font-size: 29px;
+        }
+
+        body .deck-controls {
+            left: auto;
+            right: 22px;
+            top: 22px;
+            bottom: auto;
+            transform: none;
+        }
+
+        .lang-toggle {
+            height: 39px;
+            min-width: 48px;
+            padding: 0 13px;
+            border: 1px solid rgba(246,242,232,0.18);
+            border-radius: 999px;
+            background: rgba(32,244,255,0.1);
+            color: var(--ink);
+            font-family: var(--font-mono);
+            font-size: 13px;
+            font-weight: 800;
+            text-transform: uppercase;
+            cursor: pointer;
+        }
+
+        /* ===========================================
+           INLINE EDITING UI
+           Hidden by default; hover top-left or press E.
+           =========================================== */
+        .edit-hotzone {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 80px;
+            height: 80px;
+            z-index: 10000;
+            cursor: pointer;
+        }
+
+        .edit-toggle,
+        .save-toggle {
+            position: fixed;
+            left: 18px;
+            z-index: 10001;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.25s ease, transform 0.25s ease;
+            border: 1px solid rgba(246,242,232,0.22);
+            background: rgba(5,5,7,0.76);
+            color: var(--ink);
+            font-family: var(--font-mono);
+            font-size: 13px;
+            font-weight: 700;
+            padding: 10px 13px;
+            border-radius: 999px;
+            backdrop-filter: blur(16px);
+        }
+
+        .edit-toggle {
+            top: 18px;
+        }
+
+        .save-toggle {
+            top: 62px;
+        }
+
+        .edit-toggle.show,
+        .edit-toggle.active,
+        .save-toggle.show,
+        .save-toggle.active {
+            opacity: 1;
+            pointer-events: auto;
+            transform: translateY(0);
+        }
+
+        [contenteditable="true"] {
+            outline: 2px dashed rgba(203,255,90,0.68);
+            outline-offset: 6px;
+            cursor: text;
+        }
+    </style>
+</head>
+<body>
+    <div class="deck-viewport">
+        <main class="deck-stage" id="deckStage">
+            <section class="slide active">
+                <div class="noise"></div>
+                <div class="topline">
+                    <div class="brand-lockup"><span class="live-dot pulse-live"></span><span data-i18n="brand" data-outcome-brand>TikTok Live Room Case Study</span></div>
+                    <div class="page-num">01 / 04</div>
+                </div>
+                <div class="slide-inner home-case-layout">
+                    <p class="eyebrow reveal" data-i18n="homeEyebrow" data-outcome-eyebrow>3 placeholder cases / video + ASR</p>
+                    <h1 class="reveal" data-i18n="homeTitle" data-outcome-title>Live Room Case Showcase</h1>
+                    <p class="subhead reveal" data-i18n="homeSubtitle" data-outcome-subtitle>Use this page as the entry index. Replace the case names, summaries, and evaluations when the final inputs are ready.</p>
+                    <div class="home-case-grid reveal">
+                        <div class="home-case-card panel" data-case-index="0">
+                            <video data-case-video data-clip="1" src="7642386496221825806/7642386496221825806_Cut1.mp4" muted autoplay loop playsinline></video>
+                            <div class="rank-badge">
+                                <span class="rank-medal">1</span>
+                                <span data-rank-label>Champion</span>
+                            </div>
+                            <div class="home-case-meta">
+                                <span class="tag" data-case-label>Case 01</span>
+                                <h3 data-case-title>Placeholder Case Title</h3>
+                            </div>
+                        </div>
+                        <div class="home-case-card panel" data-case-index="1">
+                            <video data-case-video data-clip="1" src="7645332895296490254/7645332895296490254_Cut1.mp4" muted autoplay loop playsinline></video>
+                            <div class="rank-badge">
+                                <span class="rank-medal">2</span>
+                                <span data-rank-label>Runner-up</span>
+                            </div>
+                            <div class="home-case-meta">
+                                <span class="tag" data-case-label>Case 02</span>
+                                <h3 data-case-title>Placeholder Case Title</h3>
+                            </div>
+                        </div>
+                        <div class="home-case-card panel" data-case-index="2">
+                            <video data-case-video data-clip="1" src="7645575516317158175/7645575516317158175_Cut1.mp4" muted autoplay loop playsinline></video>
+                            <div class="rank-badge">
+                                <span class="rank-medal">3</span>
+                                <span data-rank-label>Third Place</span>
+                            </div>
+                            <div class="home-case-meta">
+                                <span class="tag" data-case-label>Case 03</span>
+                                <h3 data-case-title>Placeholder Case Title</h3>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="slide" data-case-index="0">
+                <div class="noise"></div>
+                <div class="topline">
+                    <div class="brand-lockup"><span class="live-dot"></span><span data-case-label>Case 01</span></div>
+                    <div class="page-num">02 / 04</div>
+                </div>
+                <div class="slide-inner case-hero-layout">
+                    <div class="video-wall reveal">
+                        <div class="video-card">
+                            <span class="clip-label" data-i18n="clip1">Clip 1</span>
+                            <video data-case-video data-clip="1" src="7646964721861675807/7646964721861675807_Cut1.mp4" muted controls playsinline></video>
+                        </div>
+                        <div class="video-card">
+                            <span class="clip-label" data-i18n="clip2">Clip 2</span>
+                            <video data-case-video data-clip="2" src="7646964721861675807/7646964721861675807_Cut2.mp4" muted controls playsinline></video>
+                        </div>
+                        <div class="video-card">
+                            <span class="clip-label" data-i18n="clip3">Clip 3</span>
+                            <video data-case-video data-clip="3" src="7646964721861675807/7646964721861675807_Cut3.mp4" muted controls playsinline></video>
+                        </div>
+                    </div>
+                    <div class="case-copy">
+                        <p class="eyebrow reveal" data-case-label>Case 01</p>
+                        <h2 class="reveal" data-case-title>Add final case headline here.</h2>
+                        <div class="insight-list reveal">
+                            <div data-case-comment>Placeholder judge comment. Replace with final analysis.</div>
+                        </div>
+                        <div class="asr-strip reveal" data-i18n="asrPlaceholder">ASR excerpt placeholder. Add selected transcript evidence here.</div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="slide" data-case-index="1">
+                <div class="noise"></div>
+                <div class="topline">
+                    <div class="brand-lockup"><span class="live-dot"></span><span data-case-label>Case 02</span></div>
+                    <div class="page-num">03 / 04</div>
+                </div>
+                <div class="slide-inner case-hero-layout">
+                    <div class="video-wall reveal">
+                        <div class="video-card">
+                            <span class="clip-label" data-i18n="clip1">Clip 1</span>
+                            <video data-case-video data-clip="1" src="7642386496221825806/7642386496221825806_Cut1.mp4" muted controls playsinline></video>
+                        </div>
+                        <div class="video-card">
+                            <span class="clip-label" data-i18n="clip2">Clip 2</span>
+                            <video data-case-video data-clip="2" src="7642386496221825806/7642386496221825806_Cut2.mp4" muted controls playsinline></video>
+                        </div>
+                        <div class="video-card">
+                            <span class="clip-label" data-i18n="clip3">Clip 3</span>
+                            <video data-case-video data-clip="3" src="7642386496221825806/7642386496221825806_Cut4.mp4" muted controls playsinline></video>
+                        </div>
+                    </div>
+                    <div class="case-copy">
+                        <p class="eyebrow reveal" data-case-label>Case 02</p>
+                        <h2 class="reveal" data-case-title>Add final case headline here.</h2>
+                        <div class="insight-list reveal">
+                            <div data-case-comment>Placeholder judge comment. Replace with final analysis.</div>
+                        </div>
+                        <div class="asr-strip reveal" data-i18n="asrPlaceholder">ASR excerpt placeholder. Add selected transcript evidence here.</div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="slide" data-case-index="2">
+                <div class="noise"></div>
+                <div class="topline">
+                    <div class="brand-lockup"><span class="live-dot"></span><span data-case-label>Case 03</span></div>
+                    <div class="page-num">04 / 04</div>
+                </div>
+                <div class="slide-inner case-hero-layout">
+                    <div class="video-wall reveal">
+                        <div class="video-card">
+                            <span class="clip-label" data-i18n="clip1">Clip 1</span>
+                            <video data-case-video data-clip="1" src="7642586345214380814/7642586345214380814_Cut1.mp4" muted controls playsinline></video>
+                        </div>
+                        <div class="video-card">
+                            <span class="clip-label" data-i18n="clip2">Clip 2</span>
+                            <video data-case-video data-clip="2" src="7642586345214380814/7642586345214380814_Cut2.mp4" muted controls playsinline></video>
+                        </div>
+                        <div class="video-card">
+                            <span class="clip-label" data-i18n="clip3">Clip 3</span>
+                            <video data-case-video data-clip="3" src="7642586345214380814/7642586345214380814_Cut3.mp4" muted controls playsinline></video>
+                        </div>
+                    </div>
+                    <div class="case-copy">
+                        <p class="eyebrow reveal" data-case-label>Case 03</p>
+                        <h2 class="reveal" data-case-title>Add final case headline here.</h2>
+                        <div class="insight-list reveal">
+                            <div data-case-comment>Placeholder judge comment. Replace with final analysis.</div>
+                        </div>
+                        <div class="asr-strip reveal" data-i18n="asrPlaceholder">ASR excerpt placeholder. Add selected transcript evidence here.</div>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <div class="deck-controls" aria-label="Presentation controls">
+        <span id="slideCounter">1 / 4</span>
+        <button class="lang-toggle" id="langToggle" title="Language">中文</button>
+        <div class="progress-shell"><div class="progress-bar" id="progressBar"></div></div>
+        <span data-i18n="navHint">Arrows / Space</span>
+    </div>
+
+    <div class="edit-hotzone"></div>
+    <button class="edit-toggle" id="editToggle" title="Edit mode (E)" data-i18n="edit">Edit</button>
+    <button class="save-toggle" id="saveToggle" title="Save edited text" data-i18n="save">Save</button>
+
+    <script>
+        /* ===========================================
+           LANGUAGE SWITCHER
+           Toggle all visible placeholder copy between English and Chinese.
+           =========================================== */
+        const i18n = {
+            en: {
+                documentTitle: "TikTok Live Room Case Showcase",
+                brand: "TikTok Live Room Case Study",
+                homeEyebrow: "3 placeholder cases / video + ASR",
+                homeTitle: "Live Room Case Showcase",
+                homeSubtitle: "Use this page as the entry index. Replace the case names, summaries, and evaluations when the final inputs are ready.",
+                case01: "Case 01",
+                case02: "Case 02",
+                case03: "Case 03",
+                placeholderTitle: "Placeholder Case Title",
+                placeholderSummary: "Short case description placeholder. Add the final case summary here.",
+                case01Placeholder: "Case 01 placeholder",
+                case02Placeholder: "Case 02 placeholder",
+                case03Placeholder: "Case 03 placeholder",
+                detailHeadline: "Add final case headline here.",
+                eval01: "Placeholder evaluation point 01. Replace with final analysis.",
+                eval02: "Placeholder evaluation point 02. Replace with final analysis.",
+                eval03: "Placeholder evaluation point 03. Replace with final analysis.",
+                asrPlaceholder: "ASR excerpt placeholder. Add selected transcript evidence here.",
+                clip1: "Clip 1",
+                clip2: "Clip 2",
+                clip3: "Clip 3",
+                navHint: "Arrows / Space",
+                edit: "Edit",
+                done: "Done",
+                save: "Save",
+                saved: "Saved",
+                langButton: "中文"
+            },
+            zh: {
+                documentTitle: "TikTok 直播间案例展示",
+                brand: "TikTok 直播间案例研究",
+                homeEyebrow: "3 个占位案例 / 视频 + ASR",
+                homeTitle: "直播间案例展示",
+                homeSubtitle: "这里作为案例入口页。最终输入准备好后，可替换案例名称、摘要和评价内容。",
+                case01: "案例 01",
+                case02: "案例 02",
+                case03: "案例 03",
+                placeholderTitle: "占位案例标题",
+                placeholderSummary: "案例简介占位。后续在这里填入最终案例摘要。",
+                case01Placeholder: "案例 01 占位",
+                case02Placeholder: "案例 02 占位",
+                case03Placeholder: "案例 03 占位",
+                detailHeadline: "在这里填入最终案例标题。",
+                eval01: "评价点 01 占位。后续替换为正式分析。",
+                eval02: "评价点 02 占位。后续替换为正式分析。",
+                eval03: "评价点 03 占位。后续替换为正式分析。",
+                asrPlaceholder: "ASR 摘录占位。在这里填入选中的转写证据。",
+                clip1: "切片 1",
+                clip2: "切片 2",
+                clip3: "切片 3",
+                navHint: "方向键 / 空格",
+                edit: "编辑",
+                done: "完成",
+                save: "保存",
+                saved: "已保存",
+                langButton: "EN"
+            }
+        };
+
+        const embeddedOutcome = {
+                  "version": 1,
+                  "title": {
+                            "en": "Star Agent",
+                            "zh": "Agent 大明星 101"
+                  },
+                  "brand": {
+                            "en": "TikTok Live Room Case Study",
+                            "zh": "TikTok 直播间案例研究"
+                  },
+                  "eyebrow": {
+                            "en": "3 shortlisted cases | video clips + ASR",
+                            "zh": "3 个入围案例｜视频切片 + ASR"
+                  },
+                  "subtitle": {
+                            "en": "Looking for the next Pamela.",
+                            "zh": "寻找下一位帕梅拉。"
+                  },
+                  "cases": [
+                            {
+                                      "case_no": 1,
+                                      "source_rank_label": "冠军",
+                                      "source_name": "1",
+                                      "case_id": "7642386496221825806",
+                                      "clips": [
+                                                1,
+                                                2,
+                                                4
+                                      ],
+                                      "case_title": {
+                                                "en": "Summer Fitness Tips Live",
+                                                "zh": "夏日身材管理直播间"
+                                      },
+                                      "judge_comment": {
+                                                "en": "INTJ Neal Strategist: 该直播间的观众互动高频自然，还有明确引导点赞、加入免费社区的强有力留资CTA，体现出留资直播间的高质量标准。\nISTP Steve Virtuoso: 该直播间高频自然点名互动观众，内容实用接地气，且有明确引导用户加入专属社区的留资CTA，符合留资直播间的高质量要求。\nENFJ Alice Protagonist: 该直播间高频互动观众自然，且有明确引导用户加入免费社区的强留资CTA，符合留资直播间的核心要求。",
+                                                "zh": "INTJ Neal 战略家：该直播间的观众互动高频自然，还有明确引导点赞、加入免费社区的强有力留资CTA，体现出留资直播间的高质量标准。\nISTP Steve 鉴赏家：该直播间高频自然点名互动观众，内容实用接地气，且有明确引导用户加入专属社区的留资CTA，符合留资直播间的高质量要求。\nENFJ Alice 主人公：该直播间高频互动观众自然，且有明确引导用户加入免费社区的强留资CTA，符合留资直播间的核心要求。"
+                                      },
+                                      "host_summary": {
+                                                "zh": "就看俩案例谁互动更自然高频、留资引导明确，更符合留资直播间的质量要求。"
+                                      }
+                            },
+                            {
+                                      "case_no": 2,
+                                      "source_rank_label": "亚军",
+                                      "source_name": "4",
+                                      "case_id": "7645332895296490254",
+                                      "clips": [
+                                                1,
+                                                2,
+                                                3
+                                      ],
+                                      "case_title": {
+                                                "en": "Beach Workout Companion Live",
+                                                "zh": "海滩轻运动陪练直播间"
+                                      },
+                                      "judge_comment": {
+                                                "en": "INTJ Neal Strategist: 该直播间的海滩健身场景生动有表现力，全程高频自然和观众互动，且明确引导用户查看主页相关账号及店铺，体现出留资直播间标准。",
+                                                "zh": "INTJ Neal 战略家：该直播间的海滩健身场景生动有表现力，全程高频自然和观众互动，且明确引导用户查看主页相关账号及店铺，体现出留资直播间标准。"
+                                      },
+                                      "host_summary": {
+                                                "zh": "俩案例谁场景更有表现力、互动更自然，有没有明确引导留资，更符合留资直播间的要求。"
+                                      }
+                            },
+                            {
+                                      "case_no": 3,
+                                      "source_rank_label": "季军",
+                                      "source_name": "2",
+                                      "case_id": "7645575516317158175",
+                                      "clips": [
+                                                1,
+                                                2,
+                                                3
+                                      ],
+                                      "case_title": {
+                                                "en": "Tarot Reading Q&A Live",
+                                                "zh": "塔罗互动解读直播间"
+                                      },
+                                      "judge_comment": {
+                                                "en": "INTJ Neal Strategist: 该直播间高频自然回应观众的塔罗提问，CTA清晰明确引导用户选择对应服务，符合高质量留资直播间标准。\nISTP Steve Virtuoso: 该直播间高频与观众互动、多次回应用户的占卜需求，同时多次明确引导用户点赞、选择付费解读服务，CTA清晰有力，体现出留资直播间要求。\nENFJ Alice Protagonist: 该直播间全程高频响应观众的提问需求，有明确清晰的CTA引导用户选择对应付费阅读服务，符合留资直播间的高质量标准。",
+                                                "zh": "INTJ Neal 战略家：该直播间高频自然回应观众的塔罗提问，CTA清晰明确引导用户选择对应服务，符合高质量留资直播间标准。\nISTP Steve 鉴赏家：该直播间高频与观众互动、多次回应用户的占卜需求，同时多次明确引导用户点赞、选择付费解读服务，CTA清晰有力，体现出留资直播间要求。\nENFJ Alice 主人公：该直播间全程高频响应观众的提问需求，有明确清晰的CTA引导用户选择对应付费阅读服务，符合留资直播间的高质量标准。"
+                                      },
+                                      "host_summary": {
+                                                "zh": "就看俩案例谁的观众互动更积极、引导留资的CTA更清晰，更符合留资直播间标准。"
+                                      }
+                            }
+                  ]
+        };
+
+        const clipOverrides = {
+            "7642386496221825806": [1, 2, 4]
+        };
+
+        let outcomeData = embeddedOutcome;
+
+        let currentLang = localStorage.getItem("tiktok-live-room-case-showcase-lang") || "en";
+
+        function t(key) {
+            return (i18n[currentLang] && i18n[currentLang][key]) || i18n.en[key] || key;
+        }
+
+        function applyLanguage(lang) {
+            currentLang = lang;
+            localStorage.setItem("tiktok-live-room-case-showcase-lang", currentLang);
+            document.documentElement.lang = currentLang === "zh" ? "zh-CN" : "en";
+            document.title = t("documentTitle");
+            document.querySelectorAll("[data-i18n]").forEach((element) => {
+                const key = element.dataset.i18n;
+                element.textContent = t(key);
+            });
+            const langToggle = document.getElementById("langToggle");
+            if (langToggle) langToggle.textContent = t("langButton");
+            const editToggle = document.getElementById("editToggle");
+            if (editToggle && !editToggle.classList.contains("active")) editToggle.textContent = t("edit");
+            const saveToggle = document.getElementById("saveToggle");
+            if (saveToggle) saveToggle.textContent = t("save");
+            renderOutcome();
+        }
+
+        function localized(value, fallback = "") {
+            if (!value) return fallback;
+            if (typeof value === "string") return value;
+            return value[currentLang] || value.en || value.zh || fallback;
+        }
+
+        function escapeHtml(value) {
+            return String(value)
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;")
+                .replace(/'/g, "&#39;");
+        }
+
+        function renderDeckTitle(element, title) {
+            if (currentLang !== "zh") {
+                element.textContent = title;
+                return;
+            }
+            const normalized = title.replace(/\s+/g, " ").trim();
+            const agentMatch = normalized.match(/^Agent\s+(.+)$/i);
+            const mainTitle = agentMatch ? agentMatch[1] : normalized;
+            const numberStyled = escapeHtml(mainTitle).replace(/(101)$/u, '<span class="zh-title-number">$1</span>');
+            element.innerHTML = `<span class="zh-title-mark">AGENT</span><span class="zh-title-main">${numberStyled}</span>`;
+        }
+
+        function paddedCaseNumber(caseData, index) {
+            const caseNo = caseData.case_no || index + 1;
+            return String(caseNo).padStart(2, "0");
+        }
+
+        function caseLabel(caseData, index) {
+            const number = paddedCaseNumber(caseData, index);
+            return currentLang === "zh" ? `案例 ${number}` : `Case ${number}`;
+        }
+
+        function rankLabel(caseData, index) {
+            const zhFallback = ["冠军", "亚军", "季军"];
+            const enFallback = ["Champion", "Runner-up", "Third Place"];
+            if (currentLang === "zh" && caseData.source_rank_label) return caseData.source_rank_label;
+            return currentLang === "zh" ? zhFallback[index] || caseLabel(caseData, index) : enFallback[index] || caseLabel(caseData, index);
+        }
+
+        function clipNumberFor(caseData, clipSlot) {
+            const override = clipOverrides[caseData.case_id];
+            if (Array.isArray(caseData.clips) && caseData.clips[clipSlot - 1]) return caseData.clips[clipSlot - 1];
+            if (override && override[clipSlot - 1]) return override[clipSlot - 1];
+            return clipSlot;
+        }
+
+        function setVideoSource(video, caseData) {
+            const clipSlot = Number(video.dataset.clip || 1);
+            const clipNumber = clipNumberFor(caseData, clipSlot);
+            const src = `${caseData.case_id}/${caseData.case_id}_Cut${clipNumber}.mp4`;
+            if (video.getAttribute("src") !== src) {
+                video.setAttribute("src", src);
+                video.load();
+            }
+        }
+
+        function parseJudgeLine(line) {
+            const [rawPrefix, ...rest] = String(line || "").split(/[:：]/);
+            const comment = rest.join("：").trim() || String(line || "").trim();
+            const prefix = rawPrefix.trim();
+            const match = prefix.match(/^(INTJ|ISTP|ENFJ)\s+([^\s]+)\s+(.+)$/i);
+            if (!match) {
+                return {
+                    mbti: "JDG",
+                    name: prefix || "Judge",
+                    role: currentLang === "zh" ? "评委" : "Judge",
+                    comment
+                };
+            }
+            return {
+                mbti: match[1].toUpperCase(),
+                name: match[2],
+                role: match[3],
+                comment
+            };
+        }
+
+        function avatarForJudge(mbti) {
+            if (mbti === "INTJ") return "N";
+            if (mbti === "ISTP") return "S";
+            if (mbti === "ENFJ") return "A";
+            return "J";
+        }
+
+        function traitForJudge(mbti) {
+            const zhTraits = {
+                INTJ: "冷静拆解",
+                ISTP: "实战校准",
+                ENFJ: "共情动员"
+            };
+            const enTraits = {
+                INTJ: "Strategic",
+                ISTP: "Hands-on",
+                ENFJ: "Warm lead"
+            };
+            const traits = currentLang === "zh" ? zhTraits : enTraits;
+            return traits[mbti] || (currentLang === "zh" ? "评审视角" : "Judge view");
+        }
+
+        function renderJudgeComments(element, text) {
+            const lines = String(text || "")
+                .split("\n")
+                .map((line) => line.trim())
+                .filter(Boolean);
+            if (!lines.length) {
+                element.textContent = t("placeholderSummary");
+                return;
+            }
+            const cards = lines.map((line) => {
+                const judge = parseJudgeLine(line);
+                const typeClass = judge.mbti.toLowerCase();
+                return `
+                    <article class="judge-card ${escapeHtml(typeClass)}">
+                        <div class="judge-avatar" data-trait="${escapeHtml(traitForJudge(judge.mbti))}">${escapeHtml(avatarForJudge(judge.mbti))}</div>
+                        <div>
+                            <div class="judge-meta">
+                                <span class="judge-mbti">${escapeHtml(judge.mbti)}</span>
+                                <span class="judge-name">${escapeHtml(judge.name)}</span>
+                                <span class="judge-role">${escapeHtml(judge.role)}</span>
+                            </div>
+                            <div class="judge-comment">${escapeHtml(judge.comment)}</div>
+                        </div>
+                    </article>
+                `;
+            }).join("");
+            element.innerHTML = `<div class="judge-list">${cards}</div>`;
+        }
+
+        function renderOutcome() {
+            if (!outcomeData || !Array.isArray(outcomeData.cases)) return;
+            const deckTitle = localized(outcomeData.title, t("homeTitle"));
+            document.querySelectorAll("[data-outcome-title]").forEach((element) => {
+                renderDeckTitle(element, deckTitle);
+            });
+            document.title = deckTitle;
+            document.querySelectorAll("[data-outcome-brand]").forEach((element) => {
+                element.textContent = localized(outcomeData.brand, t("brand"));
+            });
+            document.querySelectorAll("[data-outcome-eyebrow]").forEach((element) => {
+                element.textContent = localized(outcomeData.eyebrow, t("homeEyebrow"));
+            });
+            document.querySelectorAll("[data-outcome-subtitle]").forEach((element) => {
+                element.textContent = localized(outcomeData.subtitle, t("homeSubtitle"));
+            });
+
+            document.querySelectorAll("[data-case-index]").forEach((container) => {
+                const index = Number(container.dataset.caseIndex);
+                const caseData = outcomeData.cases[index];
+                if (!caseData || !caseData.case_id) return;
+
+                container.querySelectorAll("[data-case-label]").forEach((element) => {
+                    element.textContent = element.closest(".home-case-card") ? rankLabel(caseData, index) : caseLabel(caseData, index);
+                });
+                container.querySelectorAll("[data-rank-label]").forEach((element) => {
+                    element.textContent = rankLabel(caseData, index);
+                });
+                container.querySelectorAll("[data-case-title]").forEach((element) => {
+                    element.textContent = localized(caseData.case_title, t("placeholderTitle"));
+                });
+                container.querySelectorAll("[data-case-comment]").forEach((element) => {
+                    renderJudgeComments(element, localized(caseData.judge_comment, t("placeholderSummary")));
+                });
+                container.querySelectorAll("[data-case-video]").forEach((video) => {
+                    setVideoSource(video, caseData);
+                });
+                container.querySelectorAll(".asr-strip").forEach((element) => {
+                    const asrPath = `${caseData.case_id}/${caseData.case_id}_ASR.txt`;
+                    element.textContent = currentLang === "zh" ? `ASR 来源：${asrPath}` : `ASR source: ${asrPath}`;
+                });
+            });
+        }
+
+        async function loadOutcome() {
+            try {
+                const response = await fetch("outcome.txt", { cache: "no-store" });
+                if (response.ok) {
+                    const data = await response.json();
+                    if (data && Array.isArray(data.cases)) outcomeData = data;
+                }
+            } catch (error) {
+                console.info("Using embedded outcome fallback.", error);
+            }
+            applyLanguage(currentLang);
+        }
+
+        /* ===========================================
+           SLIDE PRESENTATION CONTROLLER
+           Handles fixed-stage scaling, keyboard, wheel, and touch navigation.
+           =========================================== */
+        class SlidePresentation {
+            constructor() {
+                this.slides = Array.from(document.querySelectorAll(".slide"));
+                this.currentSlide = 0;
+                this.stage = document.getElementById("deckStage");
+                this.counter = document.getElementById("slideCounter");
+                this.progressBar = document.getElementById("progressBar");
+                this.wheelLocked = false;
+                this.touchStartX = 0;
+                this.touchStartY = 0;
+                this.setupStageScale();
+                this.setupKeyboardNav();
+                this.setupWheelNav();
+                this.setupTouchNav();
+                this.showSlide(0);
+            }
+
+            setupStageScale() {
+                const scale = () => {
+                    const factor = Math.min(window.innerWidth / 1920, window.innerHeight / 1080);
+                    const x = (window.innerWidth - 1920 * factor) / 2;
+                    const y = (window.innerHeight - 1080 * factor) / 2;
+                    this.stage.style.transform = `translate(${x}px, ${y}px) scale(${factor})`;
+                };
+                scale();
+                window.addEventListener("resize", scale);
+            }
+
+            setupKeyboardNav() {
+                window.addEventListener("keydown", (event) => {
+                    if (event.target && event.target.isContentEditable) return;
+                    const forward = ["ArrowRight", "ArrowDown", " ", "PageDown"];
+                    const backward = ["ArrowLeft", "ArrowUp", "PageUp"];
+                    if (forward.includes(event.key)) {
+                        event.preventDefault();
+                        this.next();
+                    }
+                    if (backward.includes(event.key)) {
+                        event.preventDefault();
+                        this.previous();
+                    }
+                    if (event.key === "Home") this.showSlide(0);
+                    if (event.key === "End") this.showSlide(this.slides.length - 1);
+                });
+            }
+
+            setupWheelNav() {
+                window.addEventListener("wheel", (event) => {
+                    if (Math.abs(event.deltaY) < 18 || this.wheelLocked) return;
+                    this.wheelLocked = true;
+                    if (event.deltaY > 0) this.next();
+                    else this.previous();
+                    setTimeout(() => { this.wheelLocked = false; }, 520);
+                }, { passive: true });
+            }
+
+            setupTouchNav() {
+                window.addEventListener("touchstart", (event) => {
+                    const touch = event.changedTouches[0];
+                    this.touchStartX = touch.clientX;
+                    this.touchStartY = touch.clientY;
+                }, { passive: true });
+
+                window.addEventListener("touchend", (event) => {
+                    const touch = event.changedTouches[0];
+                    const dx = touch.clientX - this.touchStartX;
+                    const dy = touch.clientY - this.touchStartY;
+                    if (Math.max(Math.abs(dx), Math.abs(dy)) < 42) return;
+                    if (Math.abs(dx) > Math.abs(dy)) {
+                        if (dx < 0) this.next();
+                        else this.previous();
+                    } else {
+                        if (dy < 0) this.next();
+                        else this.previous();
+                    }
+                }, { passive: true });
+            }
+
+            showSlide(index) {
+                this.currentSlide = Math.max(0, Math.min(index, this.slides.length - 1));
+                this.slides.forEach((slide, slideIndex) => {
+                    const isActive = slideIndex === this.currentSlide;
+                    slide.classList.toggle("active", isActive);
+                    slide.classList.toggle("visible", isActive);
+                    if (!isActive) {
+                        slide.querySelectorAll("video").forEach((video) => video.pause());
+                    }
+                });
+                this.counter.textContent = `${this.currentSlide + 1} / ${this.slides.length}`;
+                this.progressBar.style.width = `${((this.currentSlide + 1) / this.slides.length) * 100}%`;
+            }
+
+            next() {
+                this.showSlide(this.currentSlide + 1);
+            }
+
+            previous() {
+                this.showSlide(this.currentSlide - 1);
+            }
+        }
+
+        /* ===========================================
+           INLINE TEXT EDITOR
+           Allows quick copy edits in the browser and localStorage persistence.
+           =========================================== */
+        class InlineEditor {
+            constructor() {
+                this.isActive = false;
+                this.storageKey = "tiktok-live-room-case-showcase-edits-v1";
+                this.editableSelector = "h1, h2, h3, p, span, .metric-value, .metric-label, .step-title, .step-copy";
+                this.editToggle = document.getElementById("editToggle");
+                this.saveToggle = document.getElementById("saveToggle");
+                this.load();
+                this.bind();
+            }
+
+            bind() {
+                this.editToggle.addEventListener("click", () => this.toggleEditMode());
+                this.saveToggle.addEventListener("click", () => this.save());
+                window.addEventListener("keydown", (event) => {
+                    if (event.key.toLowerCase() === "e" && !event.metaKey && !event.ctrlKey && !event.altKey) {
+                        if (event.target && event.target.isContentEditable) return;
+                        this.toggleEditMode();
+                    }
+                    if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === "s") {
+                        event.preventDefault();
+                        this.save();
+                    }
+                });
+            }
+
+            toggleEditMode() {
+                this.isActive = !this.isActive;
+                this.editToggle.classList.toggle("active", this.isActive);
+                this.saveToggle.classList.toggle("active", this.isActive);
+                this.editToggle.textContent = this.isActive ? t("done") : t("edit");
+                document.querySelectorAll(this.editableSelector).forEach((element) => {
+                    if (element.closest(".deck-controls") || element.closest("button")) return;
+                    element.contentEditable = this.isActive ? "true" : "false";
+                });
+                if (!this.isActive) this.save();
+            }
+
+            getEditableElements() {
+                return Array.from(document.querySelectorAll(this.editableSelector))
+                    .filter((element) => !element.closest(".deck-controls") && !element.closest("button"));
+            }
+
+            save() {
+                const payload = this.getEditableElements().map((element) => element.innerHTML);
+                localStorage.setItem(this.storageKey, JSON.stringify(payload));
+                this.saveToggle.textContent = t("saved");
+                setTimeout(() => { this.saveToggle.textContent = t("save"); }, 900);
+            }
+
+            load() {
+                const raw = localStorage.getItem(this.storageKey);
+                if (!raw) return;
+                try {
+                    const payload = JSON.parse(raw);
+                    this.getEditableElements().forEach((element, index) => {
+                        if (typeof payload[index] === "string") element.innerHTML = payload[index];
+                    });
+                } catch (error) {
+                    console.warn("Could not load saved edits", error);
+                }
+            }
+        }
+
+        /* ===========================================
+           EDIT BUTTON HOVER BEHAVIOR
+           Uses JS delay so the hidden button remains reachable.
+           =========================================== */
+        const presentation = new SlidePresentation();
+        const editor = new InlineEditor();
+        const hotzone = document.querySelector(".edit-hotzone");
+        const editToggle = document.getElementById("editToggle");
+        const saveToggle = document.getElementById("saveToggle");
+        const langToggle = document.getElementById("langToggle");
+        let hideTimeout = null;
+
+        loadOutcome();
+
+        langToggle.addEventListener("click", () => {
+            applyLanguage(currentLang === "en" ? "zh" : "en");
+        });
+
+        function showEditButtons() {
+            clearTimeout(hideTimeout);
+            editToggle.classList.add("show");
+            if (editor.isActive) saveToggle.classList.add("show");
+        }
+
+        function scheduleHideEditButtons() {
+            hideTimeout = setTimeout(() => {
+                if (!editor.isActive) {
+                    editToggle.classList.remove("show");
+                    saveToggle.classList.remove("show");
+                }
+            }, 400);
+        }
+
+        hotzone.addEventListener("mouseenter", showEditButtons);
+        hotzone.addEventListener("mouseleave", scheduleHideEditButtons);
+        editToggle.addEventListener("mouseenter", showEditButtons);
+        editToggle.addEventListener("mouseleave", scheduleHideEditButtons);
+        saveToggle.addEventListener("mouseenter", showEditButtons);
+        saveToggle.addEventListener("mouseleave", scheduleHideEditButtons);
+    </script>
+</body>
+</html>

@@ -1,0 +1,158 @@
+{
+  "msg_type": "interactive",
+  "card": {
+    "config": {
+      "wide_screen_mode": true,
+      "enable_forward": true
+    },
+    "header": {
+      "template": "blue",
+      "title": {
+        "tag": "plain_text",
+        "content": "Agent 大明星 101｜入围案例合集"
+      }
+    },
+    "elements": [
+      {
+        "tag": "div",
+        "text": {
+          "tag": "lark_md",
+          "content": "**3 个入围案例｜视频切片 + ASR**\n寻找下一位帕梅拉。"
+        }
+      },
+      {
+        "tag": "hr"
+      },
+      {
+        "tag": "div",
+        "text": {
+          "tag": "lark_md",
+          "content": "**Case 01｜更年期减脂问答直播间**\nINTJ Neal 战略家：该直播间有明确CTA，告知用户发消息说'calculator'就能免费得卡路里计算器。\nISTP Steve 鉴赏家：该直播间开场精准戳更年期女性减脂痛点，抛出‘帮2000+用户减脂’等干货钩子，不墨迹，整体吸引力强。\nENFJ Alice 主人公：该直播间开场就明确直播价值，主动引导首次来的观众发表情互动，还共情大家减脂的真实痛点，情绪价值拉满。"
+        }
+      },
+      {
+        "tag": "hr"
+      },
+      {
+        "tag": "div",
+        "text": {
+          "tag": "lark_md",
+          "content": "**Case 02｜高互动健身社群直播间**\nINTJ Neal 战略家：该直播间先铺垫健身干货价值，给出明确留资指令'make sure you join my free school community'。\nISTP Steve 鉴赏家：该直播间全程称呼观众'cousins'，主动点名称呼进场观众，引导大家互动，亲和力强，情绪价值拉满。"
+        }
+      },
+      {
+        "tag": "hr"
+      },
+      {
+        "tag": "div",
+        "text": {
+          "tag": "lark_md",
+          "content": "**Case 03｜备赛训练陪练直播间**\nINTJ Neal 战略家：该直播间明确给出行动指令，引导用户点击banner提交表单、下载school app加入教练社区，转化路径清晰。\nISTP Steve 鉴赏家：该直播间多次明确引导留资，给出‘五餐减脂公式’等具体利益点，钩子清晰真实。\nENFJ Alice 主人公：该直播间互动感更强，发起了'first time in my live put a one in the chat'的互动，多次引导留资，亲和力更佳。"
+        }
+      },
+      {
+        "tag": "hr"
+      },
+      {
+        "tag": "div",
+        "text": {
+          "tag": "lark_md",
+          "content": "**直播间高光截图**"
+        }
+      },
+      {
+        "tag": "column_set",
+        "flex_mode": "stretch",
+        "background_style": "default",
+        "columns": [
+          {
+            "tag": "column",
+            "width": "weighted",
+            "weight": 1,
+            "vertical_align": "top",
+            "elements": [
+              {
+                "tag": "div",
+                "text": {
+                  "tag": "lark_md",
+                  "content": "**冠军｜更年期减脂问答直播间**"
+                }
+              },
+              {
+                "tag": "img",
+                "img_key": "img_v3_0212b_23a79bd1-128d-4d30-884a-7dde515437hu",
+                "alt": {
+                  "tag": "plain_text",
+                  "content": "冠军｜更年期减脂问答直播间 切片截图"
+                },
+                "mode": "fit_horizontal"
+              }
+            ]
+          },
+          {
+            "tag": "column",
+            "width": "weighted",
+            "weight": 1,
+            "vertical_align": "top",
+            "elements": [
+              {
+                "tag": "div",
+                "text": {
+                  "tag": "lark_md",
+                  "content": "**亚军｜高互动健身社群直播间**"
+                }
+              },
+              {
+                "tag": "img",
+                "img_key": "img_v3_0212b_958ffdc2-0366-4dda-88dd-74fd5913cdhu",
+                "alt": {
+                  "tag": "plain_text",
+                  "content": "亚军｜高互动健身社群直播间 切片截图"
+                },
+                "mode": "fit_horizontal"
+              }
+            ]
+          },
+          {
+            "tag": "column",
+            "width": "weighted",
+            "weight": 1,
+            "vertical_align": "top",
+            "elements": [
+              {
+                "tag": "div",
+                "text": {
+                  "tag": "lark_md",
+                  "content": "**季军｜备赛训练陪练直播间**"
+                }
+              },
+              {
+                "tag": "img",
+                "img_key": "img_v3_0212b_f4c3c252-aa2d-41bc-bc18-13546354c4hu",
+                "alt": {
+                  "tag": "plain_text",
+                  "content": "季军｜备赛训练陪练直播间 切片截图"
+                },
+                "mode": "fit_horizontal"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "tag": "action",
+        "actions": [
+          {
+            "tag": "button",
+            "text": {
+              "tag": "plain_text",
+              "content": "查看明星直播间"
+            },
+            "type": "primary",
+            "url": "http://localhost:8000/tiktok-live-case-demo.html"
+          }
+        ]
+      }
+    ]
+  }
+}
